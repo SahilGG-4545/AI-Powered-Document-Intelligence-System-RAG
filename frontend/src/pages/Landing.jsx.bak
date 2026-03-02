@@ -1,0 +1,384 @@
+import { Link } from 'react-router-dom'
+import { Sparkles, FileText, Brain, Zap, Shield, Clock, ArrowRight, Check, Star, MessageSquare } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+
+export default function Landing() {
+  const [scrollY, setScrollY] = useState(0)
+  const [isVisible, setIsVisible] = useState({})
+  const observerRef = useRef(null)
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible((prev) => ({ ...prev, [entry.target.id]: true }))
+          }
+        })
+      },
+      { threshold: 0.1 }
+    )
+
+    document.querySelectorAll('[data-animate]').forEach((el) => {
+      if (observerRef.current) observerRef.current.observe(el)
+    })
+
+    return () => {
+      if (observerRef.current) observerRef.current.disconnect()
+    }
+  }, [])
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Navbar */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200/50">
+        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-primary-600 to-accent-600 rounded-lg flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-xl font-semibold text-gray-900">DocIntel AI</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Link 
+              to="/login" 
+              className="px-5 py-2 text-gray-700 hover:text-gray-900 transition-colors font-medium"
+            >
+              Sign In
+            </Link>
+            <Link 
+              to="/register" 
+              className="px-5 py-2.5 bg-gray-900 text-white rounded-full font-medium hover:bg-gray-800 transition-all duration-200"
+            >
+              Get Started
+            </Link>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="pt-32 pb-20 px-6">
+        <div className="container mx-auto max-w-6xl text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full mb-8 animate-fade-in">
+            <Star className="w-4 h-4 text-accent-600" />
+            <span className="text-sm font-medium text-gray-700">AI-Powered Document Intelligence</span>
+          </div>
+
+          <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight text-gray-900 animate-fade-in">
+            Transform documents
+            <br />
+            <span className="bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
+              into conversations
+            </span>
+          </h1>
+
+          <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed animate-fade-in">
+            Upload PDFs and chat with your documents using advanced AI. Get instant, accurate answers with complete source attribution.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in">
+            <Link 
+              to="/register" 
+              className="px-8 py-4 bg-gray-900 text-white rounded-full font-semibold text-lg hover:bg-gray-800 transition-all duration-200 hover:scale-105 flex items-center gap-2"
+            >
+              Start Free Trial
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+            <button className="px-8 py-4 bg-gray-100 text-gray-900 rounded-full font-semibold text-lg hover:bg-gray-200 transition-all duration-200">
+              Watch Demo
+            </button>
+          </div>
+
+          {/* Hero Image Placeholder */}
+          <div className="mt-20 relative animate-fade-in">
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200">
+              <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-12">
+                <div className="bg-white rounded-xl shadow-lg p-8 max-w-4xl mx-auto">
+                  <div className="flex items-start gap-4 mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-br from-primary-100 to-accent-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <MessageSquare className="w-6 h-6 text-primary-600" />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <div className="text-sm font-medium text-gray-500 mb-2">You asked</div>
+                      <div className="text-gray-900 font-medium">What are the key findings in the research paper?</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-primary-600 to-accent-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Sparkles className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <div className="text-sm font-medium text-gray-500 mb-2">AI Response</div>
+                      <div className="text-gray-900 leading-relaxed">
+                        The study identified three major findings: improved efficiency by 45%, reduced processing time by 60%, and enhanced accuracy to 98.5%...
+                      </div>
+                      <div className="mt-4 inline-flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg text-sm text-gray-600">
+                        <FileText className="w-4 h-4" />
+                        Source: research_paper.pdf, Page 12
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div 
+              className="absolute -top-4 -right-4 w-72 h-72 bg-accent-100 rounded-full filter blur-3xl opacity-30"
+              style={{ transform: `translateY(${scrollY * 0.1}px)` }}
+            ></div>
+            <div 
+              className="absolute -bottom-4 -left-4 w-72 h-72 bg-primary-100 rounded-full filter blur-3xl opacity-30"
+              style={{ transform: `translateY(${scrollY * -0.1}px)` }}
+            ></div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-20 px-6 border-y border-gray-200 bg-gray-50">
+        <div className="container mx-auto max-w-5xl">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div className="text-center">
+              <div className="text-5xl font-bold text-gray-900 mb-2">10K+</div>
+              <div className="text-gray-600 font-medium">Active Users</div>
+            </div>
+            <div className="text-center">
+              <div className="text-5xl font-bold text-gray-900 mb-2">50K+</div>
+              <div className="text-gray-600 font-medium">Documents Processed</div>
+            </div>
+            <div className="text-center">
+              <div className="text-5xl font-bold text-gray-900 mb-2">1M+</div>
+              <div className="text-gray-600 font-medium">Questions Answered</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-32 px-6">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-20" data-animate id="features-header">
+            <h2 className={`text-5xl md:text-6xl font-bold text-gray-900 mb-6 transition-all duration-700 ${isVisible['features-header'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+              Everything you need
+            </h2>
+            <p className={`text-xl text-gray-600 max-w-2xl mx-auto transition-all duration-700 delay-100 ${isVisible['features-header'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+              Powerful features designed for professionals who demand precision and speed
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                icon: Brain,
+                title: 'Advanced AI',
+                description: 'GPT-4 powered analysis with context-aware responses and source attribution.',
+              },
+              {
+                icon: Zap,
+                title: 'Lightning Fast',
+                description: 'FAISS vector search delivers instant results in milliseconds.',
+              },
+              {
+                icon: Shield,
+                title: 'Secure & Private',
+                description: 'Enterprise-grade security with end-to-end encryption.',
+              },
+              {
+                icon: FileText,
+                title: 'Multi-Document',
+                description: 'Upload and query across multiple PDFs simultaneously.',
+              },
+              {
+                icon: MessageSquare,
+                title: 'Natural Chat',
+                description: 'Conversational interface that understands context naturally.',
+              },
+              {
+                icon: Clock,
+                title: 'Full History',
+                description: 'Access complete conversation history and insights anytime.',
+              }
+            ].map((feature, index) => (
+              <div
+                key={index}
+                data-animate
+                id={`feature-${index}`}
+                className={`group p-8 rounded-2xl hover:bg-gray-50 transition-all duration-500 hover-lift ${isVisible[`feature-${index}`] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+                style={{ transitionDelay: `${index * 100}ms` }}
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-primary-100 to-accent-100 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <feature.icon className="w-6 h-6 text-primary-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">{feature.title}</h3>
+                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="py-32 px-6 bg-gray-50">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-20" data-animate id="how-it-works-header">
+            <h2 className={`text-5xl md:text-6xl font-bold text-gray-900 mb-6 transition-all duration-700 ${isVisible['how-it-works-header'] ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
+              Simple to use
+            </h2>
+            <p className={`text-xl text-gray-600 max-w-2xl mx-auto transition-all duration-700 delay-100 ${isVisible['how-it-works-header'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+              Get started in minutes with our intuitive workflow
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {[
+              {
+                number: '01',
+                title: 'Upload',
+                description: 'Drag and drop your PDF files. Multiple uploads supported.',
+                icon: FileText
+              },
+              {
+                number: '02',
+                title: 'Process',
+                description: 'AI extracts and indexes your content automatically.',
+                icon: Brain
+              },
+              {
+                number: '03',
+                title: 'Ask',
+                description: 'Chat naturally and get instant, accurate answers.',
+                icon: Sparkles
+              }
+            ].map((step, index) => (
+              <div 
+                key={index} 
+                className="relative text-center" 
+                data-animate 
+                id={`step-${index}`}
+              >
+                <div className={`w-16 h-16 bg-gray-900 text-white rounded-2xl flex items-center justify-center mx-auto mb-6 text-xl font-bold transition-all duration-700 ${isVisible[`step-${index}`] ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-50 rotate-12'}`}
+                  style={{ transitionDelay: `${index * 150}ms` }}
+                >
+                  {step.number}
+                </div>
+                <h3 className={`text-2xl font-semibold text-gray-900 mb-4 transition-all duration-700 ${isVisible[`step-${index}`] ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}
+                  style={{ transitionDelay: `${index * 150 + 100}ms` }}
+                >
+                  {step.title}
+                </h3>
+                <p className={`text-gray-600 leading-relaxed transition-all duration-700 ${isVisible[`step-${index}`] ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}
+                  style={{ transitionDelay: `${index * 150 + 200}ms` }}
+                >
+                  {step.description}
+                </p>
+                {index < 2 && (
+                  <ArrowRight className="hidden md:block absolute top-8 -right-6 w-6 h-6 text-gray-300" />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-32 px-6">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-20" data-animate id="testimonials-header">
+            <h2 className={`text-5xl md:text-6xl font-bold text-gray-900 mb-6 transition-all duration-700 ${isVisible['testimonials-header'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+              Loved by professionals
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                name: 'Sarah Chen',
+                role: 'Research Scientist',
+                content: 'DocIntel AI has revolutionized how I analyze research papers. What used to take hours now takes minutes.',
+              },
+              {
+                name: 'Marcus Rodriguez',
+                role: 'Legal Counsel',
+                content: 'The accuracy and speed of document analysis is incredible. A game-changer for legal research.',
+              },
+              {
+                name: 'Emily Watson',
+                role: 'Product Manager',
+                content: 'Finally, a tool that truly understands context. The AI responses are remarkably accurate.',
+              }
+            ].map((testimonial, index) => (
+              <div
+                key={index}
+                data-animate
+                id={`testimonial-${index}`}
+                className={`p-8 rounded-2xl bg-gray-50 border border-gray-200 hover:border-gray-300 transition-all duration-700 hover-lift ${isVisible[`testimonial-${index}`] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}
+                style={{ transitionDelay: `${index * 100}ms` }}
+              >
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 fill-gray-900 text-gray-900" />
+                  ))}
+                </div>
+                <p className="text-gray-700 mb-6 leading-relaxed">"{testimonial.content}"</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-primary-200 to-accent-200 rounded-full"></div>
+                  <div>
+                    <div className="font-semibold text-gray-900">{testimonial.name}</div>
+                    <div className="text-sm text-gray-600">{testimonial.role}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-32 px-6 bg-gray-900 text-white">
+        <div className="container mx-auto max-w-4xl text-center">
+          <h2 className="text-5xl md:text-6xl font-bold mb-6">
+            Ready to get started?
+          </h2>
+          <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
+            Join thousands of professionals transforming how they work with documents
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link 
+              to="/register" 
+              className="px-10 py-5 bg-white text-gray-900 rounded-full font-semibold text-lg hover:bg-gray-100 transition-all duration-200 hover:scale-105 flex items-center gap-2"
+            >
+              Start Free Trial
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+            <div className="flex items-center gap-2 text-gray-400">
+              <Check className="w-5 h-5 text-green-400" />
+              <span>No credit card required</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-12 px-6 bg-gray-50 border-t border-gray-200">
+        <div className="container mx-auto max-w-6xl">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-primary-600 to-accent-600 rounded-lg flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-white" />
+              </div>
+              <span className="font-semibold text-gray-900">DocIntel AI</span>
+            </div>
+            <div className="text-gray-600 text-sm">
+              © 2026 DocIntel AI. All rights reserved.
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  )
+}
