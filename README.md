@@ -276,18 +276,6 @@ The system uses a sophisticated RAG pipeline with 100% free AI:
 - Tailwind configuration in `tailwind.config.js`
 - API base URL in `.env`
 
-## 📝 License
-
-MIT License - feel free to use for your projects
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📧 Support
-
-For issues and questions, please open an issue on GitHub.
-
 ---
 
 Built with ❤️ using React, Flask, and OpenAI
